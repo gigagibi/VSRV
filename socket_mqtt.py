@@ -19,15 +19,18 @@ def on_connect(client, userdata, flags, rc):
 
 def send_random_voltage(socket):
     if sockets_turned[socket] == True:
+        voltage=random.randint(100, 300)
         client.publish(topic=socket +
-                       '/voltage', payload=str(random.randint(100, 300)))
+                       '/voltage', payload=str(voltage))
+        sockets_voltages[socket]=voltage
     else:
-        print(tpc + ' OFF')
+        print(socket + ' OFF')
 
 
 def check_voltage(socket):
-    if sockets_voltages[socket] <= 210 or sockets_voltages[socket] >= 240:
+    if (sockets_voltages[socket] <= 210 or sockets_voltages[socket] >= 240) and sockets_voltages[socket]!=0:
         sockets_turned[socket] = False
+        sockets_voltages[socket]=0
         client.publish(topic=socket+'/turn', payload='0')
 
 
@@ -58,7 +61,7 @@ try:
         time.sleep(1)
         # tpc = 'socket3'
         tpc = 'socket'+str(random.randint(1, 4))
-        send_random_voltage(tpc)
+        # send_random_voltage(tpc)
         check_voltage(tpc)
 
 except KeyboardInterrupt:
