@@ -5,17 +5,20 @@ import time
 client = mqtt.Client()
 
 
-def turn(socket, mode, timeout):
-    if timeout==0:
+def turn(socket, mode, seconds=0):
+    if seconds==0:
         if mode=='on':
             client.publish(topic=socket+'/turn', payload='1')
         if mode=='off':
             client.publish(topic=socket+'/turn', payload='0')
     else:
-        print(timeout-1)
-        root.after(1000, lambda: turn(socket, mode, timeout-1))
+        root.after(1000, lambda: turn(socket, mode, seconds-1))
         
 
+def timeout_into_seconds(timeout_val):
+        time_massive = timeout_val.split(':')
+        seconds = int(time_massive[0]) * 3600 + int(time_massive[1]) * 60 + int(time_massive[2])
+        return seconds
 
 class Socket:
     def __init__(self, socket):
@@ -26,12 +29,13 @@ class Socket:
         self.btn_off = Button(self.frame, text='Выключить',
                               bg='yellow', command=lambda: turn(socket, 'off'))
         
-        self.timeout = IntVar(value=0)
+        self.timeout = StringVar(value='0:0:0')
         self.entry_timer = Entry(self.frame, textvariable=self.timeout)
+        
         self.btn_timer_mode_on = Button(self.frame, text='Вкл по таймеру',
-                             bg='white', command=lambda: turn(socket, 'on', self.timeout.get()))
+                             bg='white', command=lambda: turn(socket, 'on', timeout_into_seconds(self.timeout.get())))
         self.btn_timer_mode_off = Button(self.frame, text='Выкл по таймеру',
-                             bg='white', command=lambda: turn(socket, 'off', self.timeout.get()))
+                             bg='white', command=lambda: turn(socket, 'off', timeout_into_seconds(self.timeout.get())))
 
         self.lbl_voltage.pack()
         self.btn_on.pack()
