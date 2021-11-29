@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 import time
 
 client = mqtt.Client()
-
+sockets = {}
 
 def turn(socket, mode, seconds=0):
     if seconds==0:
@@ -13,7 +13,10 @@ def turn(socket, mode, seconds=0):
             client.publish(topic=socket+'/turn', payload='0')
     else:
         root.after(1000, lambda: turn(socket, mode, seconds-1))
-        
+
+
+def create_socket(socket_name):
+    sockets[socket_name] = Socket(socket_name)      
 
 def timeout_into_seconds(timeout_val):
         time_massive = timeout_val.split(':')
@@ -23,7 +26,9 @@ def timeout_into_seconds(timeout_val):
 class Socket:
     def __init__(self, socket):
         self.frame = Frame(root, bg='grey', width=100, height=100)
-        self.lbl_voltage = Label(self.frame, text='0.0v', bg='white')
+        self.lbl_voltage = Label(self.frame, text='0v', bg='white')
+        self.lbl_voltage = Label(self.frame, text='0w', bg='white')
+        self.lbl_voltage = Label(self.frame, text='0a', bg='white')
         self.btn_on = Button(self.frame, text='Включить',
                              bg='yellow', command=lambda: turn(socket, 'on'))
         self.btn_off = Button(self.frame, text='Выключить',
@@ -50,17 +55,13 @@ root = Tk()
 
 root['bg'] = 'white'
 root.title('тест')
-# root.geometry('600x400')
 
-
-socket_panel_1 = Socket('socket1')
-socket_panel_2 = Socket('socket2')
-socket_panel_3 = Socket('socket3')
-socket_panel_4 = Socket('socket4')
-
-
-sockets = {'socket1': socket_panel_1, 'socket2': socket_panel_2, 'socket3': socket_panel_3, 'socket4': socket_panel_4}
-
+create_socket('socket1')
+create_socket('socket2')
+create_socket('socket3')
+create_socket('socket4')
+create_socket('socket5')
+create_socket('socket6')
 def on_message(client, userdata, msg):
     topic = msg.topic
     payload = msg.payload.decode("utf-8")
