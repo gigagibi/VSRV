@@ -4,14 +4,6 @@ import random
 
 client = mqtt.Client()
 
-# topics = ['socket1/voltage', 'socket1/turn', 'socket2/voltage',
-#           'socket2/turn', 'socket3/voltage', 'socket3/turn', 'socket4/voltage', 'socket4/turn', 'socket5/voltage', 'socket5/turn', 'socket6/voltage', 'socket6/turn']
-# sockets_turned = {'socket1': True, 'socket2': True,
-#                   'socket3': True, 'socket4': True,
-#                   'socket5': True, 'socket6': True}
-# sockets_voltages = {'socket1': 220,
-#                     'socket2': 220, 'socket3': 220, 'socket4': 220, 'socket5': 220, 'socket6': 220}
-
 
 class Socket:
     def __init__(self, name, turned, voltage):
@@ -64,7 +56,7 @@ def on_message(client, userdata, msg):
             client.publish(topic=topic[:7]+'/voltage', payload='220')
         elif payload == '0':
             print(topic)
-            sockets[topic[:7]].turned = True
+            sockets[topic[:7]].turned = False
             print(topic[:7])
             client.publish(topic=topic[:7]+'/voltage', payload='0')
 
@@ -76,9 +68,8 @@ client.on_connect = on_connect
 try:
     while True:
         time.sleep(1)
-        # tpc = 'socket3'
-        tpc = 'socket'+str(random.randint(1, 4))
-        # send_random_voltage(tpc)
+        tpc = 'socket'+str(random.randint(1, 6))
+        send_random_voltage(tpc)
         check_voltage(tpc)
 
 except KeyboardInterrupt:

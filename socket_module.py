@@ -5,44 +5,50 @@ import time
 client = mqtt.Client()
 sockets = {}
 
+
 def turn(socket, mode, seconds=0):
-    if seconds==0:
-        if mode=='on':
+    if seconds == 0:
+        if mode == 'on':
             client.publish(topic=socket+'/turn', payload='1')
-        if mode=='off':
+        if mode == 'off':
             client.publish(topic=socket+'/turn', payload='0')
     else:
         root.after(1000, lambda: turn(socket, mode, seconds-1))
 
 
 def create_socket(socket_name):
-    sockets[socket_name] = Socket(socket_name)      
+    sockets[socket_name] = Socket(socket_name)
+
 
 def timeout_into_seconds(timeout_val):
-        time_massive = timeout_val.split(':')
-        seconds = int(time_massive[0]) * 3600 + int(time_massive[1]) * 60 + int(time_massive[2])
-        return seconds
+    time_massive = timeout_val.split(':')
+    seconds = int(time_massive[0]) * 3600 + \
+        int(time_massive[1]) * 60 + int(time_massive[2])
+    return seconds
+
 
 class Socket:
     def __init__(self, socket):
         self.frame = Frame(root, bg='grey', width=100, height=100)
         self.lbl_voltage = Label(self.frame, text='0v', bg='white')
-        self.lbl_voltage = Label(self.frame, text='0w', bg='white')
-        self.lbl_voltage = Label(self.frame, text='0a', bg='white')
+        self.lbl_power = Label(self.frame, text='0w', bg='white')
+        self.lbl_amperage = Label(self.frame, text='0a', bg='white')
         self.btn_on = Button(self.frame, text='Включить',
                              bg='yellow', command=lambda: turn(socket, 'on'))
         self.btn_off = Button(self.frame, text='Выключить',
                               bg='yellow', command=lambda: turn(socket, 'off'))
-        
+
         self.timeout = StringVar(value='0:0:0')
         self.entry_timer = Entry(self.frame, textvariable=self.timeout)
-        
+
         self.btn_timer_mode_on = Button(self.frame, text='Вкл по таймеру',
-                             bg='white', command=lambda: turn(socket, 'on', timeout_into_seconds(self.timeout.get())))
+                                        bg='white', command=lambda: turn(socket, 'on', timeout_into_seconds(self.timeout.get())))
         self.btn_timer_mode_off = Button(self.frame, text='Выкл по таймеру',
-                             bg='white', command=lambda: turn(socket, 'off', timeout_into_seconds(self.timeout.get())))
+                                         bg='white', command=lambda: turn(socket, 'off', timeout_into_seconds(self.timeout.get())))
 
         self.lbl_voltage.pack()
+        self.lbl_power.pack()
+        self.lbl_amperage.pack()
         self.btn_on.pack()
         self.btn_off.pack()
         self.entry_timer.pack()
@@ -62,6 +68,8 @@ create_socket('socket3')
 create_socket('socket4')
 create_socket('socket5')
 create_socket('socket6')
+
+
 def on_message(client, userdata, msg):
     topic = msg.topic
     payload = msg.payload.decode("utf-8")
