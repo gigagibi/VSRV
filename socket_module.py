@@ -39,7 +39,10 @@ class Socket:
 def do_scenario():
     if (scenario_condition_attribute_var.get() == 'turned' and scenario_condition_value_var.get() in ['1', 'on'] and sockets[scenario_condition_socket_var.get()].lbl_voltage['text'] != '0v') or + \
     (scenario_condition_attribute_var.get()=='turned' and scenario_condition_value_var.get() in ['0', 'off'] and sockets[scenario_condition_socket_var.get()].lbl_voltage['text'] == '0v') or + \
-    (scenario_condition_attribute_var.get()=='voltage' and sockets[scenario_condition_socket_var.get()].lbl_voltage['text'] == scenario_condition_value_var.get()+'v'):
+    (scenario_condition_attribute_var.get()=='voltage' and sockets[scenario_condition_socket_var.get()].lbl_voltage['text'] == scenario_condition_value_var.get()+'v') or + \
+    (scenario_condition_attribute_var.get()=='amperage' and sockets[scenario_condition_socket_var.get()].lbl_amperage['text'] == scenario_condition_value_var.get()+'a') or + \
+    (scenario_condition_attribute_var.get()=='power' and sockets[scenario_condition_socket_var.get()].lbl_power['text'] == scenario_condition_value_var.get()+'w') or + \
+    (scenario_condition_attribute_var.get()=='temperature' and sockets[scenario_condition_socket_var.get()].lbl_temperature['text'] == scenario_condition_value_var.get()+'c'):
         if scenario_action_attribute_var.get() == 'turned':
             if scenario_action_value_var.get() in ['1', 'on'] and sockets[scenario_action_socket_var.get()].lbl_voltage['text']=='0v':
                 turn(scenario_action_socket_var.get(), 'on')
@@ -102,7 +105,7 @@ entry_scenario_action_value = Entry(
 opt_scenario_condition_socket = OptionMenu(
     scenario_frame, scenario_condition_socket_var, *sockets_keys)
 opt_scenario_condition_attribute = OptionMenu(
-    scenario_frame, scenario_condition_attribute_var, *['None', 'turned', 'voltage'])
+    scenario_frame, scenario_condition_attribute_var, *['None', 'turned', 'voltage', 'amperage', 'temperature', 'power'])
 entry_scenario_condition_value = Entry(
     scenario_frame, textvariable=scenario_condition_value_var)
 

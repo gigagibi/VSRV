@@ -6,21 +6,21 @@ client = mqtt.Client()
 
 
 class Socket:
-    def __init__(self, name, turned, voltage):
+    def __init__(self, name, turned, voltage, temperature, amperage, power):
         self.name = name
         self.turned = turned
         self.voltage = voltage
-        self.temperature = random.randint(30, 40)
-        self.amperage = random.randint(5, 15)
-        self.power = random.randint(10, 120)
+        self.temperature = temperature
+        self.amperage = amperage
+        self.power = power
 
 
-sockets = {'socket1': Socket('socket1', True, 220),
-           'socket2': Socket('socket2', True, 220),
-           'socket3': Socket('socket3', True, 220),
-           'socket4': Socket('socket4', True, 220),
-           'socket5': Socket('socket5', True, 220),
-           'socket6': Socket('socket6', True, 220)}
+sockets = {'socket1': Socket('socket1', True, 220, random.randint(30, 40), random.randint(5, 15), random.randint(10, 120)),
+           'socket2': Socket('socket2', True, 220, random.randint(30, 40), random.randint(5, 15), random.randint(10, 120)),
+           'socket3': Socket('socket3', True, 220, random.randint(30, 40), random.randint(5, 15), random.randint(10, 120)),
+           'socket4': Socket('socket4', True, 220, random.randint(30, 40), random.randint(5, 15), random.randint(10, 120)),
+           'socket5': Socket('socket5', True, 220, random.randint(30, 40), random.randint(5, 15), random.randint(10, 120)),
+           'socket6': Socket('socket6', True, 220, random.randint(30, 40), random.randint(5, 15), random.randint(10, 120))}
 
 
 def on_connect(client, userdata, flags, rc):
@@ -75,9 +75,10 @@ def on_message(client, userdata, msg):
 
 
 client.connect("localhost", 1883, 45)
-client.loop_start()
 client.on_message = on_message
 client.on_connect = on_connect
+client.loop_start()
+
 try:
     while True:
         time.sleep(1)
