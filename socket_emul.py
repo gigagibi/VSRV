@@ -11,6 +11,8 @@ class Socket:
         self.turned = turned
         self.voltage = voltage
         self.temperature = random.randint(30, 40)
+        self.amperage = random.randint(5, 15)
+        self.power = random.randint(10, 120)
 
 
 sockets = {'socket1': Socket('socket1', True, 220),
@@ -53,13 +55,23 @@ def on_message(client, userdata, msg):
         if payload == '1':
             print(topic)
             sockets[topic[:7]].turned = True
+            sockets[topic[:7]].temperature = random.randint(30, 40)
+            sockets[topic[:7]].amperage = random.randint(5, 15)
+            sockets[topic[:7]].power = random.randint(10, 120)
             print(topic[:7])
             client.publish(topic=topic[:7]+'/voltage', payload='220')
+            client.publish(topic=topic[:7]+'/amperage', payload=sockets[topic[:7]].amperage)
+            client.publish(topic=topic[:7]+'/temperature', payload=sockets[topic[:7]].temperature)
+            client.publish(topic=topic[:7]+'/power', payload=sockets[topic[:7]].power)
         elif payload == '0':
-            print(topic)
             sockets[topic[:7]].turned = False
-            print(topic[:7])
+            sockets[topic[:7]].temperature = 0
+            sockets[topic[:7]].amperage = 0
+            sockets[topic[:7]].power = 0
             client.publish(topic=topic[:7]+'/voltage', payload='0')
+            client.publish(topic=topic[:7]+'/amperage', payload=sockets[topic[:7]].amperage)
+            client.publish(topic=topic[:7]+'/temperature', payload=sockets[topic[:7]].temperature)
+            client.publish(topic=topic[:7]+'/power', payload=sockets[topic[:7]].power)
 
 
 client.connect("localhost", 1883, 45)

@@ -10,6 +10,7 @@ class Socket:
         self.lbl_voltage = Label(self.frame, text='0v', bg='white')
         self.lbl_power = Label(self.frame, text='0w', bg='white')
         self.lbl_amperage = Label(self.frame, text='0a', bg='white')
+        self.lbl_temperature = Label(self.frame, text='0c', bg='white')
         self.btn_on = Button(self.frame, text='Включить',
                              bg='yellow', command=lambda: turn(socket, 'on'))
         self.btn_off = Button(self.frame, text='Выключить',
@@ -26,6 +27,7 @@ class Socket:
         self.lbl_voltage.pack()
         self.lbl_power.pack()
         self.lbl_amperage.pack()
+        self.lbl_temperature.pack()
         self.btn_on.pack()
         self.btn_off.pack()
         self.entry_timer.pack()
@@ -123,12 +125,27 @@ def on_message(client, userdata, msg):
         sockets[topic[:7]].lbl_voltage['text'] = payload+'v'
         if scenario_condition_socket_var.get()==topic[:7]:
             do_scenario()
+    elif '/amperage' in topic:
+        sockets[topic[:7]].lbl_amperage['text'] = payload+'a'
+        if scenario_condition_socket_var.get()==topic[:7]:
+            do_scenario()
+    elif '/power' in topic:
+        sockets[topic[:7]].lbl_power['text'] = payload+'w'
+        if scenario_condition_socket_var.get()==topic[:7]:
+            do_scenario()
+    elif '/temperature' in topic:
+        sockets[topic[:7]].lbl_temperature['text'] = payload+'c'
+        if scenario_condition_socket_var.get()==topic[:7]:
+            do_scenario()
 
 
 def on_connect(client, userdata, flags, rc):
     for s in sockets:
         client.subscribe(s+'/voltage')
         client.subscribe(s+'/turn')
+        client.subscribe(s+'/temperature')
+        client.subscribe(s+'/amperage')
+        client.subscribe(s+'/power')
 
 
 client.on_connect = on_connect
