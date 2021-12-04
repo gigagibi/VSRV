@@ -10,6 +10,7 @@ class Socket:
         self.name = name
         self.turned = turned
         self.voltage = voltage
+        self.temperature = random.randint(30, 40)
 
 
 sockets = {'socket1': Socket('socket1', True, 220),
@@ -69,7 +70,7 @@ try:
     while True:
         time.sleep(1)
         tpc = 'socket'+str(random.randint(1, 6))
-        send_random_voltage(tpc)
+        # send_random_voltage(tpc)
         check_voltage(tpc)
 
 except KeyboardInterrupt:
