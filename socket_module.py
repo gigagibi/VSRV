@@ -1,6 +1,5 @@
 from tkinter import *
 import paho.mqtt.client as mqtt
-import time
 
 client = mqtt.Client()
 sockets = {}
